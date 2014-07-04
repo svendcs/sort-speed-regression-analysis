@@ -4,7 +4,7 @@
 function extract {
 	if [ -f data/"$1".tar.gz ]
 	then
-		dir="data/raw/$1"
+		dir="data/$1"
 		rm -rf $dir
 		mkdir -p $dir
 		tar -xzf "data/$1".tar.gz -C $dir
@@ -16,13 +16,15 @@ extract faster
 
 # Convert tab files to correct format
 function convert {
-	dir=data/raw/"$1"
+	dir=data/"$1"
 	if [ -d $dir ]
 	then
+		new_path=data/"$1"-tabs/
+		rm -rf $new_path
+
 		for file in $dir/*.tab
 		do
 			#file=${file%.tab}
-			new_path=data/"$1"-tabs/
 			new_file=$new_path${file##*/} # substitute path
 
 			mkdir -p $new_path
@@ -33,4 +35,19 @@ function convert {
 
 convert master
 convert faster
+
+function plot {
+	dir=data/"$1"-tabs
+	if [ -d $dir ]
+	then
+		first=$dir/results1.tab
+		second=$dir/results2.tab
+		third=$dir/results3.tab
+		result=data/"$1".pdf
+		gnuplot -e "first='$first'" -e "second='$second'" -e "third='$third'" -e "result='$result'" plot.plt
+	fi
+}
+
+plot master
+plot faster
 

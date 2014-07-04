@@ -8,13 +8,18 @@ for line in open(sys.argv[1]) :
 	row = line.split()
 
 	try:
-		time = int(row[0])
-		cpu = int(float(row[1]))
-		memory = int(float(row[2]))
-		io = int(float(row[3]) - io_offset)
-	except (ValueError, OverflowError):
-		continue
+		time = int(row[0]) / 1000 # seconds
+		cpu = int(float(row[1])) # (cpu time / real time) / %
+		memory = int(float(row[2]) / 1024 / 1024) # MiB
 
-	print "%d %d %d %d"%(time, cpu, memory, io)
+		time_difference = float(row[0]) - last_time # milliseconds
+		io_difference = float(row[3]) - last_io # bytes
 
-	io_offset = float(row[3]);
+		io = int(io_difference / time_difference / 1000) # MiB/s
+
+		print "%d %d %d %d"%(time/1000, cpu, memory, io)
+	except (ValueError, OverflowError, NameError):
+		pass
+
+	last_io = float(row[3]);
+	last_time = float(row[0]);
