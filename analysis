@@ -1,0 +1,36 @@
+#!/bin/zsh
+
+# Extract files
+function extract {
+	if [ -f data/"$1".tar.gz ]
+	then
+		dir="data/raw/$1"
+		rm -rf $dir
+		mkdir -p $dir
+		tar -xzf "data/$1".tar.gz -C $dir
+	fi
+}
+
+extract master
+extract faster
+
+# Convert tab files to correct format
+function convert {
+	dir=data/raw/"$1"
+	if [ -d $dir ]
+	then
+		for file in $dir/*.tab
+		do
+			#file=${file%.tab}
+			new_path=data/"$1"-tabs/
+			new_file=$new_path${file##*/} # substitute path
+
+			mkdir -p $new_path
+			python convert.py $file > $new_file
+		done
+	fi
+}
+
+convert master
+convert faster
+
