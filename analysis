@@ -36,6 +36,23 @@ function convert {
 convert master
 convert faster
 
+# Produce a file with average running times
+function sum {
+	dir=data/"$1"
+
+	if [ -d $dir ]
+	then
+		new_file=data/"$1"-summary.txt
+		rm -f new_file
+
+		python summary.py $dir/*.txt > $new_file
+	fi
+}
+
+sum master
+sum faster
+
+# Plot results
 function plot {
 	dir=data/"$1"-tabs
 	if [ -d $dir ]

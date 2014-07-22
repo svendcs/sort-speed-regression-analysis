@@ -17,7 +17,7 @@ for line in open(sys.argv[1]) :
 
 		io = int(io_difference / time_difference / 1000) # MiB/s
 
-		print "%d %d %d %d"%(time/1000, cpu, memory, io)
+		print "%d %d %d %d"%(time, cpu, memory, io)
 	except (ValueError, OverflowError, NameError):
 		pass
 
